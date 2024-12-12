@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/settings.css' %}">
+    <style>
+        .welcome-text {
+            color: #E47129 !important;  
+            font-weight: bold;  
+        }
+    </style>
+    <title>PetNet</title>
+</head>
+<body>
+    <header>
+        PetNet
+    </header>
+
+    <nav>
+        <div>
+            <button class="no-frame"><a href="{% url 'home' %}">Home</a></button>
+            <button class="no-frame"><a href="{% url 'search_friends' %}">Explore</a></button>
+            <button class="no-frame"><a href="{% url 'recommendation' %}">Recommendations</a></button>
+            <button class="no-frame"><a href="{% url 'about' %}">About Us</a></button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <a href="{% url 'home' %}">
+             <img src="{% static 'images/BannerLogo_2.jpg' %}" alt="PetNet Logo" class="sidebar-logo">
+        </a>
+        <ul>
+            <li><button class="no-frame"><a href="{% url 'profile' %}">Profile</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'friends' %}">Friends</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'events' %}">Events</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'settings' %}">Settings</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'contact' %}">Contact us</a></button></li>
+        </ul>
+        <button id="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="title">
+                <h1>Settings</h1>
+            </div>
+            
+            {% if user.is_authenticated %}
+            <div class="user-info">
+                <span class="welcome-text">Welcome, {{ user.username }}</span>
+                <button class="settings-button"><a href="{% url 'login' %}">Logout</a></button>
+            </div>
+        {% else %}
+            <script>
+                window.location.href = "{% url 'login' %}";
+            </script>
+        {% endif %}
+        
+
+            <div class="change-section">
+                <h2>Change Username</h2>
+                <form action="{% url 'change_username' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="new_username" placeholder="New Username" required>
+                    <button type="submit">Change Username</button>
+                </form>
+            </div>
+
+            <div class="change-section">
+                <h2>Update Email</h2>
+                <button onclick="showNotification()">Update Email</button>
+            </div>
+
+            <div class="change-section">
+                <h2>Change Password</h2>
+                    <button class="password_reset"><a href="{% url 'password_reset' %}">Password reset</a></button>
+            </div>
+            
+            <div class="manage-pet-profiles">
+                <h2>Manage Pet Profiles</h2>
+                <button class="settings-button"><a href="{% url 'addpet' %}">Add Pet Profile</a></button>
+                <button class="settings-button"><a href="{% url 'editpet' %}">Edit Pet Profiles</a></button>
+            </div>
+        
+        </div>
+    </div>
+
+    <footer>© 2024 PetNet. All rights reserved.</footer>
+    <script>
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+            document.querySelector('header').classList.toggle('header-centered');
+            document.querySelector('nav').classList.toggle('nav-centered');
+        }
+
+        function showNotification() {
+
+        if ("Notification" in window) {
+        
+            Notification.requestPermission().then(function(permission) {
+                if (permission === "granted") {
+                  
+                    new Notification("To update your email, please contact PetNet staff via the contact page for identity verification.");
+                } else {
+               
+                    alert("You need to allow notifications to receive the message.");
+                }
+            });
+        } else {
+            alert("Your browser does not support notifications.");
+        }
+
+        window.location.href = "{% url 'contact' %}";
+    }
+    </script>
+</body>
+</html>

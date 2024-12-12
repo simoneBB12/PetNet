@@ -1,0 +1,364 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Comic Sans MS', cursive;
+    background-color: #ffffff;
+    color: #ffffff;
+}
+
+header {
+    background-color: #2C807D;
+    padding: 0;
+    height: auto;
+    text-align: center;
+    font-size: 35px;
+    color: #E47129;
+    font-family: 'Comic Sans MS', cursive;
+    font-weight: bold;
+    width: calc(100% - 175px);
+    margin-left: 175px;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: margin 0.3s ease, width 0.3s ease;
+}
+body.sidebar-collapsed header.header-centered {
+    width: calc(100% - 60px);
+    margin-left: 60px;
+}
+
+body.sidebar-collapsed nav.nav-centered {
+    width: calc(100% - 60px);
+    margin-left: 60px;
+}
+nav {
+    background-color: #1f5a58;
+    padding: 0;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 175px;
+    width: calc(100% - 175px);
+    transition: margin 0.3s ease, width 0.3s ease;
+    box-sizing: border-box;
+}
+
+nav a {
+    color: #fff;
+    margin: 0 15px;
+    font-family: 'Comic Sans MS', cursive;
+    text-decoration: none;
+}
+
+.sidebar {
+    background-color: #1f5a58;
+    width: 175px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: width 0.3s ease;
+}
+
+.sidebar-logo {
+    width: 125px;
+    height: auto;
+    margin-bottom: 20px;
+    display: block;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+.sidebar.collapsed .sidebar-logo,
+.sidebar.collapsed ul,
+.sidebar.collapsed ul li a {
+    display: none;
+}
+
+#toggle-sidebar {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+    margin-bottom: 30px;
+    margin-top: auto;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    flex-grow: 1;
+}
+
+.sidebar ul li {
+    margin: 15px 0;
+}
+
+.sidebar ul li a {
+    color: #E47129;
+    text-decoration: none;
+    font-family: 'Comic Sans MS', cursive;
+}
+.content {
+    margin-left: 175px;
+    padding: 20px;
+    flex-grow: 1;
+}
+
+body.sidebar-collapsed .content {
+    margin-left: 60px;
+}
+
+body.sidebar-collapsed .create-post {
+    margin-left: 85px;
+}
+
+#calendar {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 4px solid #2C807D;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #1f5a58;
+    font-family: 'Comic Sans MS', cursive;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    color: #1f5a58;
+}
+
+.modal-content input, .modal-content button {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.close-btn {
+    background-color: #E47129;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.fc-col-header-cell {
+    color: #2C807D;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.fc-daygrid-day-number {
+    color: #1f5a58;
+    font-size: 14px;
+    font-weight: bold;
+}
+.fc-day-today {
+    background-color: #ffe7d9 !important;
+    color: #ffffff !important;
+    border-radius: 0px;
+}
+.create-btn {
+    background-color: #1f5a58;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.create-btn:hover {
+    background-color: #E47129;
+}
+
+.fc .fc-button {
+    background-color: #2C807D !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 5px !important;
+    padding: 5px 10px !important;
+    font-family: 'Comic Sans MS', cursive !important;
+    font-weight: bold !important;
+    transition: background-color 0.3s ease !important;
+}
+
+.fc .fc-button:hover {
+    background-color: #E47129 !important;
+    color: #ffffff !important;
+}
+
+
+.fc .fc-today-button {
+    background-color: #1f5a58 !important;
+    color: #ffffff !important;
+}
+
+.fc .fc-today-button:hover {
+    background-color: #E47129 !important;
+}
+
+.fc .fc-button-primary {
+    background-color: #1f5a58 !important;
+    color: #ffffff !important;
+}
+
+.add-event-btn {
+    position: absolute;
+    top: 100px;
+    right: 75px;
+    background-color: #1f5a58;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    font-family: 'Comic Sans MS', cursive;
+    font-size: 16px;
+    display: inline-block !important;
+}
+
+.add-event-btn:hover {
+    background-color: #E47129;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    color: #1f5a58;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+}
+
+.modal-content input,
+.modal-content button {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.close-btn {
+    background-color: #E47129;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.create-btn {
+    background-color: #1f5a58;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Add/Delete button styling */
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Styling for delete button */
+.delete-btn {
+    background-color: #dc3545; /* Red background */
+    color: white;
+    font-weight: bold;
+}
+
+.delete-btn:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+@media (max-width: 1024px) {
+    .calendar-container {
+        max-width: 90%;
+        padding: 15px;
+    }
+}
+
+footer {
+    background-color: #1f5a58;
+    color: #E47129 ;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.no-frame {
+    background-color: transparent;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.no-frame a {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.no-frame:hover {
+    background-color: #E47129;
+}

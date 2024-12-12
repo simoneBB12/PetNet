@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/events.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel="stylesheet">
+    <title>PetNet</title>
+</head>
+<body>
+    <header>
+        PetNet
+    </header>
+
+    <nav>
+        <div>
+            <button class="no-frame"><a href="{% url 'home' %}">Home</a></button>
+            <button class="no-frame"><a href="{% url 'search_friends' %}">Explore</a></button>
+            <button class="no-frame"><a href="{% url 'recommendation' %}">Recommendations</a></button>
+            <button class="no-frame"><a href="{% url 'about' %}">About Us</a></button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/BannerLogo_2.jpg' %}" alt="PetNet Logo" class="sidebar-logo">
+        </a>
+        <ul>
+            <li><button class="no-frame"><a href="{% url 'profile' %}">Profile</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'friends' %}">Friends</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'events' %}">Events</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'settings' %}">Settings</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'contact' %}">Contact us</a></button></li>
+        </ul>
+        <button id="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+    </div>
+
+    <div class="content">
+        <div class="calendar-container">
+            <button class="add-event-btn" onclick="openEventModal()">Add Event</button>
+            <div id="calendar"></div>
+        </div>
+    </div>
+
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Create New Event</h3>
+            <input type="text" id="eventTitle" placeholder="Event Title" required>
+            <input type="date" id="eventDate" required>
+            <button id="saveEvent" class="create-btn">Save Event</button>
+            <button id="deleteEvent" class="delete-btn" style="display: none;">Delete Event</button>
+            <button onclick="closeEventModal()" class="close-btn">Cancel</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 PetNet: Let's build a community that truly cares</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+    <script>
+        let currentEventId = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                aspectRatio: 1.5,
+                windowResize: function(view) {
+                    if (window.innerWidth < 600) {
+                        calendar.changeView('listMonth');
+                    } else {
+                        calendar.changeView('dayGridMonth');
+                    }
+                },
+                events: '/events/api/list',
+                eventClick: function(info) {
+                    currentEventId = info.event.id;
+                    document.getElementById('eventTitle').value = info.event.title;
+                    document.getElementById('eventDate').value = info.event.startStr.split('T')[0];
+                    document.getElementById('modalTitle').innerText = 'Edit Event';
+                    document.getElementById('deleteEvent').style.display = 'inline-block';
+                    document.getElementById('eventModal').style.display = 'flex';
+                }
+            });
+            calendar.render();
+
+            document.getElementById('saveEvent').addEventListener('click', function () {
+                const title = document.getElementById('eventTitle').value;
+                const date = document.getElementById('eventDate').value;
+
+                if (title && date) {
+                    const method = currentEventId ? 'PUT' : 'POST';
+                    const url = currentEventId ? `/events/api/edit/${currentEventId}/` : '/events/api/create';
+                    fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ title: title, date: date })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert('Error: ' + data.error);
+                        } else {
+                            if (method === 'POST') {
+                                calendar.addEvent({ title: data.title, start: data.date, id: data.id });
+                            } else {
+                                const event = calendar.getEventById(currentEventId);
+                                event.setProp('title', data.title);
+                                event.setStart(data.date);
+                            }
+                            closeEventModal();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error saving event:', error);
+                    });
+                } else {
+                    alert('Please provide both title and date.');
+                }
+            });
+
+            document.getElementById('deleteEvent').addEventListener('click', function () {
+                fetch(`/events/delete_event/${currentEventId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        const event = calendar.getEventById(currentEventId);
+                        event.remove();
+                        closeEventModal();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting event:', error);
+                });
+            });
+        });
+
+        function openEventModal() {
+            document.getElementById('eventModal').style.display = 'flex';
+            document.getElementById('modalTitle').innerText = 'Create New Event';
+            document.getElementById('deleteEvent').style.display = 'none';
+            currentEventId = null;
+        }
+
+        function closeEventModal() {
+            document.getElementById('eventModal').style.display = 'none';
+            document.getElementById('eventTitle').value = '';
+            document.getElementById('eventDate').value = '';
+        }
+
+        // Sidebar toggle
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+            document.querySelector('header').classList.toggle('header-centered');
+            document.querySelector('nav').classList.toggle('nav-centered');
+        }
+    </script>
+</body>
+</html>

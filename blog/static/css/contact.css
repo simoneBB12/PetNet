@@ -1,0 +1,232 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Comic Sans MS', cursive;
+    background-color: #ffffff;
+    color: #ffffff;
+}
+
+header {
+    background-color: #2C807D;
+    padding: 0;
+    height: auto;
+    text-align: center;
+    font-size: 35px;
+    color: #E47129;
+    font-family: 'Comic Sans MS', cursive;
+    font-weight: bold;
+    width: calc(100% - 175px);
+    margin-left: 175px;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: margin 0.3s ease, width 0.3s ease;
+}
+body.sidebar-collapsed header.header-centered {
+    width: calc(100% - 60px);
+    margin-left: 60px;
+}
+
+body.sidebar-collapsed nav.nav-centered {
+    width: calc(100% - 60px);
+    margin-left: 60px;
+}
+nav {
+    background-color: #1f5a58;
+    padding: 0;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 175px;
+    width: calc(100% - 175px);
+    transition: margin 0.3s ease, width 0.3s ease;
+    box-sizing: border-box;
+}
+
+nav a {
+    color: #fff;
+    margin: 0 15px;
+    font-family: 'Comic Sans MS', cursive;
+    text-decoration: none;
+}
+
+.sidebar {
+    background-color: #1f5a58;
+    width: 175px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: width 0.3s ease;
+}
+
+.sidebar-logo {
+    width: 125px;
+    height: auto;
+    margin-bottom: 20px;
+    display: block;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+.sidebar.collapsed .sidebar-logo,
+.sidebar.collapsed ul,
+.sidebar.collapsed ul li a {
+    display: none;
+}
+
+#toggle-sidebar {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+    margin-bottom: 30px;
+    margin-top: auto;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    flex-grow: 1;
+}
+
+.sidebar ul li {
+    margin: 15px 0;
+}
+
+.sidebar ul li a {
+    color: #E47129;
+    text-decoration: none;
+    font-family: 'Comic Sans MS', cursive;
+}
+
+.content {
+    margin-left: 175px;
+    padding: 20px;
+    flex-grow: 1;
+    transition: margin-left 0.3s ease;
+}
+
+body.sidebar-collapsed .content {
+    margin-left: 75px;
+}
+
+.contact-container {
+   max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 15px solid #2C807D;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #333;
+    font-family: 'Comic Sans MS', cursive;
+    text-align: center;
+}
+
+.contact-container h1 {
+   color: #2C807D;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+.contact-container p {
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.contact-info p {
+    color: #333;
+    margin: 5px 0;
+}
+
+.contact-info a {
+    color: #2C807D;
+    text-decoration: none;
+}
+
+.contact-info a:hover {
+    text-decoration: underline;
+}
+
+
+.contact-form .form-group {
+    margin: 10px 0;
+    text-align: left;
+}
+
+.contact-form label {
+    display: block;
+    font-weight: bold;
+    color: #1f5a58;
+    margin-bottom: 5px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+.contact-form textarea {
+    resize: vertical;
+}
+
+.contact-form button {
+    background-color: #2C807D;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.contact-form button:hover {
+    background-color: #E47129;
+}
+
+footer {
+    background-color: #1f5a58;
+    color: #E47129 ;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.no-frame {
+    background-color: transparent;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.no-frame a {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.no-frame:hover {
+    background-color: #E47129;
+}

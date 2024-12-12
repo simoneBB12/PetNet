@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/about.css' %}">
+</head>
+
+<body>
+    <header>
+        PetNet
+    </header>
+
+    <nav>
+        <div>
+        <button class="no-frame"><a href="{% url 'home' %}">Home</a></button>
+        <button class="no-frame"><a href="{% url 'search_friends' %}">Explore</a></button>
+        <button class="no-frame"><a href="{% url 'recommendation' %}">Recommendations</a></button>
+        <button class="no-frame"><a href="{% url 'about' %}">About Us</a></button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <a href="{% url 'home' %}">
+             <img src="{% static 'images/BannerLogo_2.jpg' %}" alt="PetNet Logo" class="sidebar-logo">
+        </a>
+        <ul>
+            <li><button class="no-frame"><a href="{% url 'profile' %}">Profile</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'friends' %}">Friends</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'events' %}">Events</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'settings' %}">Settings</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'contact' %}">Contact us</a></button></li>
+        </ul>
+        <button id="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+    </div>
+
+
+    <div class="content-wrapper">
+        <div class="main-content">
+            <div class="section">
+                <div class="container">
+                    <div class="title">
+                        <h2> About Us </h2>
+                    </div>
+                    <div class="content">
+                        <div class="article">
+                            <h2>Our Mission</h2>
+                            <h3> At PetNet, we believe every pet deserves a life filled with joy, connection, and fulfillment. Our mission is to empower pet owners to create communities where pets can thrive. By fostering these connections, we aim to enhance the quality of life for our pets and provide owners with the resources they need to ensure their companion aren't restricted due to their day-to-day responsibilities. Together, we can build a community that truly cares! </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-section">
+                <div class="container">
+                    <div class="row">
+                        <div class="title">
+                            <h2>Our Team</h2>
+                        </div>
+                    </div>
+                    <div class="team-card">
+                        <div class="card">
+                            <div class="card-image">
+                                <img src = "{% static 'images/img-mia.jpg'%}">
+                            </div>
+                            <div class="content">
+                                <h3>Mia Enamorado</h3>
+                                <h4>Junior</h4>
+                                <p> Mia is a computer science major at the University of North Texas. She was always fascinated with this field due to her not being able to own a technology device growing up. She owns two dogs, a golden doodle and a mini poodle, and their companionship inspired the idea of PetNet because of the thought that her dogs wait all day for her to come home, but what if there was a way to connect to other pet owners nearby.</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-image">
+                                <img src = "{% static 'images/img-britton.jpg'%}">
+                            </div>
+                            <div class="content">
+                                <h3>Britton Womble</h3>
+                                <h4>Senior</h4>
+                                <p> Britton is a 5th year senior at the University of North Texas, and she is pursuing a minor in computer science. She hopes that combining her minor with her Biochemistry major it will allow for more opportunities in her future. She is passionate about PetNet due to the love she has for her four dogs, and hopes to use this platform daily to benefit their lives. </p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-image">
+                                <img src = "{% static 'images/img-chin.jpg'%}">
+                            </div>
+                            <div class="content">
+                                <h3>Chin Lun Wong</h3>
+                                <h4>Junior</h4>
+                                <p> Chin is a junior at the University of North Texas, and chose this major because it was always his dream to code and create projects that inspired him. He is passionate about PetNet becuase he knows that it will combine his love for coding with his desire to make a lasting positive impact.</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-image">
+                                <img src = "{% static 'images/img-Simone.jpg'%}">
+                            </div>
+                            <div class="content">
+                                <h3>Simone Brewington</h3>
+                                <h4>Senior</h4>
+                                <p> Simone decided to pursue a degree in computer science because from a young age he was intrigued with the process and solving puzzles. He joined a comptuer science club and realized that the line of critical thinking is similar to figuring out puzzles. He is passionate about PetNet because he became a first time pet owner last year,and this platform will allow him to share the anxiety and joys of owning a cat.</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-image">
+                                <img src = "{% static 'images/img-Paul.jpg'%}">
+                            </div>
+                            <div class="content">
+                                <h3>Paul Moturi</h3>
+                                <h4>Senior</h4>
+                                <p> Paul has attended the University of North Texas all four years, during which he has developed a strong passion for solving complex problems, and creatin impactful solutions. He chose this field because he loves building something that can improve people's lives. His enthusiasm for this project stems from his own desire to create a useful tool for pet owners that will help enhance the well-being of their furry companions. </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 PetNet: Let's build a community that truly cares</p>
+    </footer>
+
+    <script>
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+            document.querySelector('header').classList.toggle('header-centered');
+            document.querySelector('nav').classList.toggle('nav-centered');
+        }
+    </script>
+</body>
+</html>

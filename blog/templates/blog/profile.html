@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>PetNet</title>
+</head>
+
+<body>
+    <header>
+        PetNet
+    </header>
+
+    <nav>
+        <div>
+            <button class="no-frame"><a href="{% url 'home' %}">Home</a></button>
+            <button class="no-frame"><a href="{% url 'search_friends' %}">Explore</a></button>
+            <button class="no-frame"><a href="{% url 'recommendation' %}">Recommendations</a></button>
+            <button class="no-frame"><a href="{% url 'about' %}">About Us</a></button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/BannerLogo_2.jpg' %}" alt="PetNet Logo" class="sidebar-logo">
+        </a>
+        <ul>
+            <li><button class="no-frame"><a href="{% url 'profile' %}">Profile</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'friends' %}">Friends</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'events' %}">Events</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'settings' %}">Settings</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'contact' %}">Contact us</a></button></li>
+        </ul>
+        <button id="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+    </div>
+
+    <div class="content">
+        <!-- Profile Container -->
+        <div class="profile-container">
+            <div class="profile-pic" id="profile-pic">
+                <div class="profile-letter">
+                    {{ user.username|slice:":1"|upper }}
+                </div>
+            </div>
+            <div class="username-container">
+                <p>Username</p>
+                <span id="username">{{ user.username }}</span>
+            </div>
+            <div class="user-stats">
+                <div class="stat-item">
+                    <span id="posts-count">{{ post_count }}</span>  <p>Posts</p>
+                </div>
+                <div class="stat-item">
+                    <span id="followers-count">{{followers_count}}</span>
+                    <p>Followers</p>
+                </div>
+                <div class="stat-item">
+                    <span id="following-count">{{followers_count}}</span>
+                    <p>Following</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Pets Section -->
+        <div class="add-pet-button-container">
+            <button class="add-pet-button" onclick="window.location.href='{% url 'addpet' %}'">+ Add Pet</button>
+        </div>
+
+        <!-- Pets Section -->
+        <section class="pets-container">
+            <h2>Your Pets</h2>
+            {% if Pets %}
+            <div class="pet-cards-container">
+                {% for Pet in Pets %}
+                <div class="pet-card">
+                    <div class="pet-info">
+                        <strong>{{ Pet.name }}</strong>
+                        <p>Species: {{ Pet.species }}</p>
+                        <!-- Optional: Include a delete button here if needed -->
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="no-pets-message">You have no pets added yet.</p>
+            {% endif %}
+        </section>
+
+        <div class="feed-container">
+            <h2>Your Posts</h2>
+            {% if user_posts %}
+            <div class="feed-items-container">
+                {% for post in user_posts %}
+                <div class="feed-item" id="post-{{ post.id }}">
+                    <div class="feed-content">
+                        <p id="post-content-{{ post.id }}">{{ post.content }}</p>
+                        {% if post.image %}
+                        <div class="feed-image">
+                            <img src="{{ post.image.url }}" alt="Post Image" class="post-image">
+                        </div>
+                        {% endif %}
+                        <div class="post-meta">
+                            {{ post.created_at|date:"F d, Y h:i A" }}</small>
+                        </div>
+                    </div>
+
+                    <!-- Edit and Delete Buttons (Remain in the same place) -->
+                    <div class="post-actions">
+                        <button class="edit-button" data-id="{{ post.id }}"
+                            onclick="editPost({{ post.id }})">Edit</button>
+                        <button class="delete-button" data-id="{{ post.id }}"
+                            onclick="deletePost({{ post.id }})">Delete</button>
+                    </div>
+
+                    <!-- Post Footer: Like Count and Comment Button (Moved here) -->
+                    <div class="post-footer">
+                        <button class="like-btn {% if user in post.likes.all %}liked{% endif %}"
+                            data-id="{{ post.id }}">
+                            ♥
+                        </button>
+                        <span class="like-count">{{ post.like_count }}</span>
+
+                        <!-- Comment button placed next to the like button -->
+                        <button class="comment-button" onclick="toggleComments({{ post.id }})"
+                            aria-label="Show Comments">
+                            <i class="fa fa-comment"></i> Comments
+                        </button>
+                    </div>
+
+                    <!-- Comments Container for this post, initially hidden -->
+                    <div class="comments-container" id="comments-container-{{ post.id }}" style="display: none;">
+                    </div>
+
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>No posts yet. Share something to get started!</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <footer>
+        &copy; 2024 PetNet. All Rights Reserved.
+    </footer>
+
+    <script>
+        function changeProfilePicture(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profile-img').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function editPost(postId) {
+            const postContentElement = document.querySelector(`#post-content-${postId}`);
+            const currentContent = postContentElement.innerText;
+
+            postContentElement.innerHTML = `
+            <textarea id="edit-input-${postId}" class="edit-textarea">${currentContent}</textarea>
+            <button class="save-button" onclick="savePost(${postId})">Save</button>
+            <button class="cancel-button" onclick="cancelEdit(${postId}, '${currentContent}')">Cancel</button>
+        `;
+        }
+
+        function savePost(postId) {
+            const newContent = document.getElementById(`edit-input-${postId}`).value;
+
+            fetch(`/update_post/${postId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ content: newContent })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        const postContentElement = document.querySelector(`#post-content-${postId}`);
+                        postContentElement.innerHTML = newContent;
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function cancelEdit(postId, originalContent) {
+            const postContentElement = document.querySelector(`#post-content-${postId}`);
+            postContentElement.innerHTML = originalContent;
+        }
+
+        function deletePost(postId) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                fetch(`/delete_post/${postId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Remove the post from the DOM
+                            const postElement = document.querySelector(`#post-${postId}`);
+                            postElement.remove();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+        }
+
+        function toggleComments(postId) {
+            const commentsContainer = document.getElementById(`comments-container-${postId}`);
+
+            if (commentsContainer.style.display === 'none' || commentsContainer.style.display === '') {
+                fetch(`/get_comments/${postId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            let commentsHTML = '';
+
+                            if (data.comments.length > 0) {
+                                data.comments.forEach(comment => {
+                                    commentsHTML += `
+                                <div class="comment">
+                                    <strong>${comment.author}</strong>: ${comment.content}
+                                    <small>${comment.created_at}</small>
+                                </div>
+                            `;
+                                });
+                            } else {
+                                commentsHTML = '<p>No comments yet.</p>';
+                            }
+
+                            commentsContainer.innerHTML = commentsHTML;
+                            commentsContainer.style.display = 'block';
+                        } else {
+                            commentsContainer.innerHTML = '<p>Error loading comments.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        commentsContainer.innerHTML = '<p>Error loading comments.</p>';
+                    });
+            } else {
+                commentsContainer.style.display = 'none';
+            }
+        }
+
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+            document.querySelector('header').classList.toggle('header-centered');
+            document.querySelector('nav').classList.toggle('nav-centered');
+        }
+    </script>
+</body>
+
+</html>

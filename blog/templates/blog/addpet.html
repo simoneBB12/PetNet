@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/addpet.css' %}">
+    <title>PetNet</title>
+</head>
+<body>
+    <header>
+        PetNet
+    </header>
+
+    <nav>
+        <div>
+        <button class="no-frame"><a href="{% url 'home' %}">Home</a></button>
+        <button class="no-frame"><a href="{% url 'search_friends' %}">Explore</a></button>
+        <button class="no-frame"><a href="{% url 'recommendation' %}">Recommendations</a></button>
+        <button class="no-frame"><a href="{% url 'about' %}">About Us</a></button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <a href="{% url 'home' %}">
+             <img src="{% static 'images/BannerLogo_2.jpg' %}" alt="PetNet Logo" class="sidebar-logo">
+        </a>
+        <ul>
+            <li><button class="no-frame"><a href="{% url 'profile' %}">Profile</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'friends' %}">Friends</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'events' %}">Events</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'settings' %}">Settings</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'contact' %}">Contact us</a></button></li>
+        </ul>
+        <button id="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+    </div>
+
+    <div class="content">
+        <div class="add-pet-form">
+            <h2>Add Your New Pet</h2>
+            <form action="{% url 'addpet' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="pet-name">Pet Name:</label>
+                    <input type="text" id="pet-name" name="pet_name" placeholder="Enter your pet's name" required>
+                </div>
+
+                 <div class="form-group">
+                    <label for="pet-species">Species:</label>
+                     <input type="text" id="pet-species" name="pet_species" placeholder="E.g., Dog, Cat, Rabbit" required>
+                 </div>
+
+        
+
+                <button type="submit">Add Pet</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+         <p>&copy; 2024 PetNet: Let's build a community that truly cares</p>
+     </footer>
+
+    <script>
+    function toggleSidebar() {
+        document.querySelector('.sidebar').classList.toggle('collapsed');
+        document.body.classList.toggle('sidebar-collapsed');
+        document.querySelector('header').classList.toggle('header-centered');
+        document.querySelector('nav').classList.toggle('nav-centered');
+    }
+    </script>
+</body>
+</html>

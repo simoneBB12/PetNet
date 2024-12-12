@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>PetNet</title>
+
+</head>
+
+<body>
+    <header>
+        PetNet
+    </header>
+
+    <nav>
+        <div>
+            <button class="no-frame"><a href="{% url 'home' %}">Home</a></button>
+            <button class="no-frame"><a href="{% url 'search_friends' %}">Explore</a></button>
+            <button class="no-frame"><a href="{% url 'recommendation' %}">Recommendations</a></button>
+            <button class="no-frame"><a href="{% url 'about' %}">About Us</a></button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/BannerLogo_2.jpg' %}" alt="PetNet Logo" class="sidebar-logo">
+        </a>
+        <ul>
+            <li><button class="no-frame"><a href="{% url 'profile' %}">Profile</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'friends' %}">Friends</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'events' %}">Events</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'settings' %}">Settings</a></button></li>
+            <li><button class="no-frame"><a href="{% url 'contact' %}">Contact us</a></button></li>
+        </ul>
+        <button id="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+    </div>
+
+    <main>
+        <div class="content-main">
+            <section class="post-container">
+                <h2><i class="fas fa-pencil-alt"></i> Create a Post</h2>
+                <form method="POST" enctype="multipart/form-data" action="{% url 'home' %}">
+                    {% csrf_token %}
+                    <textarea name="content" id="content" placeholder="What's on your mind?" rows="4"
+                        required></textarea>
+
+                    <!-- Row for the upload and submit buttons -->
+                    <div class="button-row">
+                        <div class="centered-upload">
+                            <label for="image-upload" class="upload-button">Choose File</label>
+                            <input type="file" id="image-upload" name="image" class="image-upload" accept="image/*">
+                            <span class="file-name">No file chosen</span>
+                        </div>
+                        <button type="submit" name="post_form" class="submit-button">
+                            <i class="fas fa-arrow-right"></i> 
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Display Posts -->
+            <section class="posts">
+                <h2>Feed</h2>
+                {% for post in posts %}
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="author-info">
+                            {% if post.author.profile.profile_picture %}
+                            <img src="{{ post.author.profile.profile_picture.url }}" alt="{{ post.author.username }}"
+                                class="avatar">
+                            {% else %}
+                            <i class="fas fa-user-circle avatar-placeholder"></i>
+                            {% endif %}
+                            <span class="author-name"> {{ post.author.username }} </span>
+                        </div>
+                    </div>
+
+                    <div class="post-content">
+                        <p>{{ post.content }}</p>
+                        {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="Post image" class="post-image">
+                        {% endif %}
+                    </div>
+
+                    <div class="post-footer">
+                        <button class="like-btn {% if user in post.likes.all %}liked{% endif %}"
+                            data-id="{{ post.id }}">
+                            ♥
+                        </button>
+                        <span class="like-count">{{ post.like_count }}</span>
+                        <small class="timestamp">{{ post.created_at|date:"F d, Y h:i A" }}</small>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="comments">
+                        <h3>Comments</h3>
+                        <div class="comments-list">
+                            {% for comment in post.comments.all %}
+                            <div class="comment" id="comment-{{ comment.id }}">
+                                <div class="comment-header">
+                                    <strong>{{ comment.author.username }}</strong>
+                                    <small>{{ post.created_at|date:"F d, Y h:i A" }}</small>
+                                </div>
+                                <p class="comment-content">{{ comment.content }}</p>
+                            </div>
+                            {% empty %}
+                            <p>No comments yet. Be the first to comment!</p>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Add Comment Form -->
+                        <form method="POST" class="comment-form" id="comment-form-{{ post.id }}">
+                            {% csrf_token %}
+                            <textarea name="content" placeholder="Add a comment..." rows="2" required></textarea>
+                            <input type="hidden" name="post_id" value="{{ post.id }}">
+                            <button type="submit" name="comment_form">Reply</button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No posts available.</p>
+                {% endfor %}
+            </section>
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside class="sidebar-right">
+            <div class="friend-requests">
+                <h3>Incoming Friend Requests</h3>
+                {% for request in incoming_friend_requests %}
+                <div class="friend-request">
+                    <img src="{{ request.sender.profile.profile_picture.url }}" alt="{{ request.sender.username }}"
+                        class="friend-avatar">
+                    <span>{{ request.sender.username }}</span>
+                    <form method="POST" class="friend-request-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="request_id" value="{{ request.id }}">
+                        <button type="submit" name="accept" class="accept-btn">Accept</button>
+                        <button type="submit" name="decline" class="decline-btn">Decline</button>
+                    </form>
+                </div>
+                {% empty %}
+                <p>No incoming requests.</p>
+                {% endfor %}
+            </div>
+
+            <div class="friends-list">
+                <h3>Your Friends</h3>
+                {% for friend in friend_list %}
+                <div class="friend-item">
+                    <img src="{{ friend.profile.profile_picture.url }}" alt="{{ friend.username }}"
+                        class="friend-avatar">
+                    <span>{{ friend.username }}</span>
+                </div>
+                {% empty %}
+                <p>No friends yet.</p>
+                {% endfor %}
+            </div>
+        </aside>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 PetNet: Let's build a community that truly cares</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+            document.body.classList.toggle('sidebar-collapsed');
+            document.querySelector('header').classList.toggle('header-centered');
+            document.querySelector('nav').classList.toggle('nav-centered');
+        }
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+        $.ajaxSetup({
+            headers: { 'X-CSRFToken': csrftoken }
+        });
+
+
+        //Function for the like feature
+        $(document).on('click', '.like-btn', function () {
+            var postId = $(this).data('id');
+            var likeButton = $(this);
+            var likeCountElement = likeButton.siblings('.like-count');
+
+            $.ajax({
+                url: '{% url "like_post" %}',
+                method: 'POST',
+                data: {
+                    'post_id': postId,
+                },
+                success: function (response) {
+                    if (response.status === 'success') {
+                        likeButton.toggleClass('liked');
+                        likeCountElement.text(response.like_count);
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+        });
+
+        $(document).on('submit', '.comment-form', function (event) {
+            event.preventDefault(); 
+
+            var form = $(this);
+            var postId = form.find('input[name="post_id"]').val();
+            var content = form.find('textarea[name="content"]').val();
+
+            $.ajax({
+                url: window.location.href,  
+                method: 'POST',
+                data: {
+                    'content': content,
+                    'post_id': postId,
+                    'comment_form': true,  
+                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),  
+                },
+                success: function (response) {
+                    if (response.status === 'success') {
+                        var commentHtml = `
+                        <div class="comment">
+                            <strong>${response.comment.author}</strong>: ${response.comment.content}
+                            <small>${response.comment.created_at}</small>
+                        </div>`;
+                        $('#post-' + postId + ' .comments').prepend(commentHtml);
+
+                        form.find('textarea[name="content"]').val('');
+                    } else {
+                        alert('Error: ' + respone.message);
+                    }
+                },
+                error: function () {
+                    alert('There was an error submitting the comment.');
+                }
+            });
+        });
+
+        document.getElementById('image-upload').addEventListener('change', function () {
+            const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+            document.querySelector('.file-name').textContent = fileName;
+        });
+
+        document.addEventListener('click', function (e) {
+            const dropdown = e.target.closest('.post-options');
+            const allDropdowns = document.querySelectorAll('.dropdown-menu');
+
+            allDropdowns.forEach(menu => menu.style.display = 'none');
+
+            if (dropdown) {
+                const menu = dropdown.querySelector('.dropdown-menu');
+                if (menu) {
+                    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+                }
+            }
+        });
+
+
+    </script>
+
+</body>
+
+</html>

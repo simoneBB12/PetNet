@@ -1,0 +1,271 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Comic Sans MS', cursive;
+    background-color: #ffffff;
+    color: #ffffff;
+}
+
+header {
+    background-color: #2C807D;
+    padding: 0;
+    height: auto;
+    text-align: center;
+    font-size: 35px;
+    color: #E47129;
+    font-family: 'Comic Sans MS', cursive;
+    font-weight: bold;
+    width: calc(100% - 175px);
+    margin-left: 175px;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: margin 0.3s ease, width 0.3s ease;
+}
+body.sidebar-collapsed header.header-centered {
+    width: calc(100% - 60px);
+    margin-left: 60px;
+}
+
+body.sidebar-collapsed nav.nav-centered {
+    width: calc(100% - 60px);
+    margin-left: 60px;
+}
+nav {
+    background-color: #1f5a58;
+    padding: 0;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 175px;
+    width: calc(100% - 175px);
+    transition: margin 0.3s ease, width 0.3s ease;
+    box-sizing: border-box;
+}
+
+nav a {
+    color: #fff;
+    margin: 0 15px;
+    font-family: 'Comic Sans MS', cursive;
+    text-decoration: none;
+}
+.sidebar {
+    background-color: #1f5a58;
+    width: 175px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: width 0.3s ease;
+}
+
+.sidebar-logo {
+    width: 125px;
+    height: auto;
+    margin-bottom: 20px;
+    display: block;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+.sidebar.collapsed .sidebar-logo,
+.sidebar.collapsed ul,
+.sidebar.collapsed ul li a {
+    display: none;
+}
+
+#toggle-sidebar {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+     margin-bottom: 30px;
+    margin-top: auto;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    flex-grow: 1;
+}
+
+.sidebar ul li {
+    margin: 15px 0;
+}
+
+.sidebar ul li a {
+    color: #E47129;
+    text-decoration: none;
+    font-family: 'Comic Sans MS', cursive;
+}
+.main-content {
+    margin-left: 200px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+body.sidebar-collapsed .main-content {
+    margin-left: 75px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.title h1 {
+    font-size: 35px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #E47129;
+}
+
+.user-info span {
+    color: #E47129;  
+    font-weight: bold;  
+}
+
+.settings-button {
+    background-color: #2F8986;
+    color: #E1F5F4;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.settings-button:hover {
+    background-color: #E47129;
+    transition: 0.3s;
+}
+
+.toggle-container {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.toggle {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    background-color: #ccc;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.toggle:before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.toggle.active {
+    background-color: #2C807D;
+}
+
+.toggle.active:before {
+    transform: translateX(30px);
+}
+
+.toggle-label {
+    font-size: 16px;
+    color: #E47129;
+    margin-right: 10px;
+}
+
+.change-section {
+    margin-bottom: 20px;
+}
+
+.change-section h2 {
+    font-size: 24px;
+    color: #E47129;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.change-section input,
+.change-section button {
+    padding: 10px;
+    margin: 5px 0;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.change-section button {
+    background-color: #2C807D;
+    color: white;
+    cursor: pointer;
+}
+
+.change-section button:hover {
+    background-color: #E47129;
+}
+
+/* Dark mode styles */
+body.dark {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+body.dark header,
+body.dark nav,
+body.dark .sidebar {
+    background-color: #1f5a58;
+}
+
+body.dark .settings-button {
+    background-color: #2F8986;
+}
+
+footer {
+    background-color: #1f5a58;
+    color: #E47129 ;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.no-frame {
+    background-color: transparent;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.no-frame a {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.no-frame:hover {
+    background-color: #E47129;
+}
